@@ -1,0 +1,327 @@
+[
+  {
+    "ts": "2026-11-07T16:40:40.284391+00:00",
+    "ticket_id": 101,
+    "agent": "boss",
+    "text": "Ticket 101 is a customer order from Tauhid Zaman for 1 CC-TEE-WHITE size S. I am calling Inventory first to see if that size is on the shelf. I am not calling Facilities.",
+    "tool": null,
+    "tool_input": null,
+    "tool_output": null,
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.284617+00:00",
+    "ticket_id": 101,
+    "agent": "inventory",
+    "text": "Classic Bulldog Tee size S has qty 0 in Aisle B. The order needs 1.",
+    "tool": "check_inventory",
+    "tool_input": {
+      "sku": "CC-TEE-WHITE",
+      "size": "S"
+    },
+    "tool_output": {
+      "sku": "CC-TEE-WHITE",
+      "name": "Classic Bulldog Tee",
+      "size": "S",
+      "qty": 0,
+      "location": "Aisle B"
+    },
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.284884+00:00",
+    "ticket_id": 101,
+    "agent": "inventory",
+    "text": "Short by 1. Bulldog Print Co handles this sku, lead time 5 days. Open unpaid invoices for that vendor: 1. They will not ship while a bill is open. Accounting should look at invoice 501.",
+    "tool": "vendor_for_sku",
+    "tool_input": {
+      "sku": "CC-TEE-WHITE"
+    },
+    "tool_output": {
+      "vendor": {
+        "id": 1,
+        "name": "Bulldog Print Co",
+        "specialty": "apparel reprint",
+        "lead_days": 5
+      },
+      "open_invoices": [
+        {
+          "id": 501,
+          "vendor_id": 1,
+          "amount": 840.0,
+          "due_date": "2026-08-28",
+          "status": "open",
+          "description": "Rush reprint CC-TEE-WHITE S"
+        }
+      ]
+    },
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.285259+00:00",
+    "ticket_id": 101,
+    "agent": "accounting",
+    "text": "Invoice 501 is open for $840.00, due 2026-08-28, which is before shop today 2026-08-31, so it is overdue. Checking has $3400.00, so the payment fits. I prepared it. I will not move cash. A human has to approve.",
+    "tool": "prepare_payment_request",
+    "tool_input": {
+      "amount": 840.0
+    },
+    "tool_output": {
+      "account": "checking",
+      "amount": 840.0,
+      "balance": 3400.0,
+      "allowed": true,
+      "reason": "enough checking cash"
+    },
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.285413+00:00",
+    "ticket_id": 101,
+    "agent": "boss",
+    "text": "Accounting prepared $840.00 for invoice 501. Ticket 101 stays open until a human approves.",
+    "tool": null,
+    "tool_input": null,
+    "tool_output": null,
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.286210+00:00",
+    "ticket_id": 101,
+    "agent": "accounting",
+    "text": "Human Kay approved the invoice payment of $840.00. Checking is now $2560.00.",
+    "tool": "apply_approved_payment",
+    "tool_input": {
+      "kind": "invoice",
+      "ref_id": 501,
+      "amount": 840.0,
+      "account": "checking",
+      "reason": "Pay overdue invoice 501 (Rush reprint CC-TEE-WHITE S) so Bulldog Print Co can ship. Due 2026-08-28, shop today is 2026-08-31."
+    },
+    "tool_output": {
+      "ok": true,
+      "kind": "invoice",
+      "ref_id": 501,
+      "amount": 840.0,
+      "account": "checking",
+      "paid_at": "2026-08-31",
+      "approved_by": "Kay",
+      "balance": 2560.0
+    },
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.286644+00:00",
+    "ticket_id": 101,
+    "agent": "customer_service",
+    "text": "Draft for Tauhid Zaman: size S of CC-TEE-WHITE is still qty 0. Invoice 501 for $840.00 was paid on 2026-08-31 after Kay approved it. Bulldog Print Co lead time is 5 days, so the reprint is not on the shelf today. This draft stays on the board.",
+    "tool": null,
+    "tool_input": null,
+    "tool_output": null,
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.287158+00:00",
+    "ticket_id": 101,
+    "agent": "boss",
+    "text": "The human payment is recorded and ticket 101 is resolved. Paid invoice 501 for $840.00 on 2026-08-31. Reprint lead time 5 days. Stock was not increased today.",
+    "tool": null,
+    "tool_input": null,
+    "tool_output": null,
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.288166+00:00",
+    "ticket_id": 102,
+    "agent": "boss",
+    "text": "Ticket 102 is a rent notice from Elm City Properties. I am calling Facilities first because this is the shop space, not a product. I am not calling Inventory.",
+    "tool": null,
+    "tool_input": null,
+    "tool_output": null,
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.288541+00:00",
+    "ticket_id": 102,
+    "agent": "facilities",
+    "text": "Lease 1 is Chapel Street shop from Elm City Properties. Monthly rent is $2400.00. Next due 2026-09-02. Shop today is 2026-08-31, so the due date is 2 days away. I cannot pay rent. Accounting should prepare $2400.00.",
+    "tool": "get_lease",
+    "tool_input": {
+      "lease_id": 1
+    },
+    "tool_output": {
+      "id": 1,
+      "space_name": "Chapel Street shop",
+      "landlord": "Elm City Properties",
+      "monthly_rent": 2400.0,
+      "next_due": "2026-09-02",
+      "notes": null
+    },
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.288937+00:00",
+    "ticket_id": 102,
+    "agent": "accounting",
+    "text": "Checking has $2560.00. Rent of $2400.00 fits, so I prepared it. Cash does not move until a human approves.",
+    "tool": "prepare_payment_request",
+    "tool_input": {
+      "amount": 2400.0
+    },
+    "tool_output": {
+      "account": "checking",
+      "amount": 2400.0,
+      "balance": 2560.0,
+      "allowed": true,
+      "reason": "enough checking cash"
+    },
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.289155+00:00",
+    "ticket_id": 102,
+    "agent": "boss",
+    "text": "Facilities confirmed the lease and Accounting prepared $2400.00. Ticket 102 waits for a human.",
+    "tool": null,
+    "tool_input": null,
+    "tool_output": null,
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.289961+00:00",
+    "ticket_id": 102,
+    "agent": "accounting",
+    "text": "Human Kay approved the rent payment of $2400.00. Checking is now $160.00.",
+    "tool": "apply_approved_payment",
+    "tool_input": {
+      "kind": "rent",
+      "ref_id": 1,
+      "amount": 2400.0,
+      "account": "checking",
+      "reason": "Pay Chapel Street shop rent to Elm City Properties. Due 2026-09-02, 2 days after 2026-08-31."
+    },
+    "tool_output": {
+      "ok": true,
+      "kind": "rent",
+      "ref_id": 1,
+      "amount": 2400.0,
+      "account": "checking",
+      "paid_at": "2026-08-31",
+      "approved_by": "Kay",
+      "balance": 160.0
+    },
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.290315+00:00",
+    "ticket_id": 102,
+    "agent": "facilities",
+    "text": "Rent payment is on the books. Chapel Street shop next due date is now 2026-10-02.",
+    "tool": "get_lease",
+    "tool_input": {
+      "lease_id": 1
+    },
+    "tool_output": {
+      "id": 1,
+      "space_name": "Chapel Street shop",
+      "landlord": "Elm City Properties",
+      "monthly_rent": 2400.0,
+      "next_due": "2026-10-02",
+      "notes": "Paid 2400.00 on 2026-08-31 after human approval by Kay"
+    },
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.290890+00:00",
+    "ticket_id": 102,
+    "agent": "boss",
+    "text": "The human payment is recorded and ticket 102 is resolved. Paid rent $2400.00 on 2026-08-31. Next due 2026-10-02.",
+    "tool": null,
+    "tool_input": null,
+    "tool_output": null,
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.291329+00:00",
+    "ticket_id": 103,
+    "agent": "boss",
+    "text": "Ticket 103 is a bulk price request from Yale AI Club for 20 CC-HOOD-NAVY size M. I am calling Inventory first to count size M. Customer Service will draft the reply after Accounting checks the margin and the cash. I am not calling Facilities.",
+    "tool": null,
+    "tool_input": null,
+    "tool_output": null,
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.291839+00:00",
+    "ticket_id": 103,
+    "agent": "inventory",
+    "text": "Basic Hoodie Big Yale size M has qty 8 in Aisle A. The club asked for 20, so the shortfall is 12. Bulldog Print Co lead time is 5 days. Open unpaid invoices: 0. A vendor with an open bill will not ship.",
+    "tool": "check_inventory",
+    "tool_input": {
+      "sku": "CC-HOOD-NAVY",
+      "size": "M"
+    },
+    "tool_output": {
+      "stock": {
+        "sku": "CC-HOOD-NAVY",
+        "name": "Basic Hoodie Big Yale",
+        "size": "M",
+        "qty": 8,
+        "location": "Aisle A"
+      },
+      "vendor": {
+        "id": 1,
+        "name": "Bulldog Print Co",
+        "specialty": "apparel reprint",
+        "lead_days": 5
+      },
+      "open_invoices": []
+    },
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.292048+00:00",
+    "ticket_id": 103,
+    "agent": "accounting",
+    "text": "List price is $58.00 and unit cost is $22.00. A 15% bulk quote is $49.30, which stays above cost. I refuse the $264.00 purchase for 12 units at the $22.00 unit cost. Checking has $160.00. That payment would go negative. No cash moves on this ticket.",
+    "tool": "get_pricing",
+    "tool_input": {
+      "sku": "CC-HOOD-NAVY"
+    },
+    "tool_output": {
+      "pricing": {
+        "sku": "CC-HOOD-NAVY",
+        "unit_cost": 22.0,
+        "list_price": 58.0
+      },
+      "cash": {
+        "name": "checking",
+        "balance": 160.0,
+        "date": "2026-08-31"
+      },
+      "purchase": 264.0,
+      "refused": true
+    },
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.292273+00:00",
+    "ticket_id": 103,
+    "agent": "customer_service",
+    "text": "Draft for Yale AI Club: we can offer 8 Basic Hoodie Big Yale size M at $49.30 each (list $58.00, cost $22.00). We only have 8 on the shelf. I refuse the $264.00 purchase for 12 units at the $22.00 unit cost. Checking has $160.00. That payment would go negative. This draft stays on the board. Nobody is emailed.",
+    "tool": null,
+    "tool_input": null,
+    "tool_output": null,
+    "model": "gpt-6-luna"
+  },
+  {
+    "ts": "2026-11-07T16:40:40.292802+00:00",
+    "ticket_id": 103,
+    "agent": "boss",
+    "text": "Inventory, Accounting, and Customer Service finished ticket 103. No payment was prepared. I am marking it resolved.",
+    "tool": null,
+    "tool_input": null,
+    "tool_output": null,
+    "model": "gpt-6-luna"
+  }
+]

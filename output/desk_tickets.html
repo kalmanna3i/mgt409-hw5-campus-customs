@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Campus Customs tickets</title>
+  <style>
+    body { font-family: Georgia, serif; margin: 24px; background: #f6f1e7; color: #1c1915; }
+    nav button { font: inherit; margin-right: 8px; padding: 8px 12px; border: 1px solid #1c3d6e; background: white; cursor: pointer; }
+    nav button.on { background: #1c3d6e; color: white; }
+    section { display: none; max-width: 820px; }
+    section.on { display: block; }
+    h1 { margin-bottom: 8px; }
+    .card { background: white; border: 1px solid #d9cbb3; padding: 12px 16px; margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <h1>Campus Customs ticket desk</h1>
+  <nav>
+    <button class="on" data-tab="t101">Ticket 101</button>
+    <button data-tab="t102">Ticket 102</button>
+    <button data-tab="t103">Ticket 103</button>
+    <button data-tab="cash">Cash</button>
+    <button data-tab="reflection">Reflection</button>
+  </nav>
+
+  <section id="t101" class="on">
+    <h2>Ticket 101 — Bulldog tee</h2>
+    <div class="card">
+      <h3>Expected</h3>
+      <p>Boss calls Inventory first. The ask is one white tee in size S, so the first fact is whether Aisle B has it. Boss does not call Facilities.</p>
+      <p>Inventory finds qty 0 and hands invoice 501 to Accounting, because Bulldog Print Co will not ship while that bill is open. Accounting prepares the $840 overdue invoice for a human. After the human approves, Customer Service drafts a note that the reprint lead time is 5 days and the shirt is still not on the shelf.</p>
+      <p>Tools: get_ticket, check_inventory, vendor_for_sku, vendor_open_invoices, get_invoice, get_desk, get_cash_account, prepare_payment_request, apply_approved_payment, set_ticket_status.</p>
+    </div>
+    <div class="card">
+      <h3>Actual</h3>
+      <p>Boss called Inventory first and did not call Facilities. Inventory reported Classic Bulldog Tee size S qty 0 in Aisle B, short by 1, vendor Bulldog Print Co, lead time 5 days, one open invoice. Accounting prepared $840 for invoice 501 because it was due 2026-08-28 and shop today was 2026-08-31, and checking had $3400. The ticket stayed open until Kay approved. Cash became $2560. Customer Service drafted the board note. Boss then marked the ticket resolved. Stock was not increased today.</p>
+      <p>Tools used: check_inventory, vendor_for_sku, prepare_payment_request, apply_approved_payment.</p>
+    </div>
+  </section>
+
+  <section id="t102">
+    <h2>Ticket 102 — Shop rent</h2>
+    <div class="card">
+      <h3>Expected</h3>
+      <p>Boss calls Facilities first. This is Elm City Properties and the Chapel Street lease, not a sku. Boss does not call Inventory.</p>
+      <p>Facilities reads lease 1: $2400 due 2026-09-02, two days after 2026-08-31. Accounting prepares that rent for a human. No customer draft is required.</p>
+      <p>Tools: get_ticket, get_lease, get_desk, get_cash_account, prepare_payment_request, apply_approved_payment, set_ticket_status.</p>
+    </div>
+    <div class="card">
+      <h3>Actual</h3>
+      <p>Boss called Facilities first and did not call Inventory. Facilities reported lease 1, Chapel Street shop, $2400, next due 2026-09-02, two days after shop today. Accounting prepared $2400 because checking had $2560. Kay approved. Checking became $160 and the next due date moved to 2026-10-02. Facilities confirmed the new date. Boss marked the ticket resolved.</p>
+      <p>Tools used: get_lease, prepare_payment_request, apply_approved_payment.</p>
+    </div>
+  </section>
+
+  <section id="t103">
+    <h2>Ticket 103 — Bulk hoodie discount</h2>
+    <div class="card">
+      <h3>Expected</h3>
+      <p>Boss calls Inventory first to count size M navy hoodies. The club asked for 20. Boss does not call Facilities.</p>
+      <p>Inventory reports the shortfall and the apparel vendor. Accounting checks list price, unit cost, and checking, and refuses a restock that would make cash negative. Customer Service drafts the discount for the units on the shelf only.</p>
+      <p>Tools: get_ticket, check_inventory, get_pricing, get_cash_account, vendor_for_sku, vendor_open_invoices, set_ticket_status.</p>
+    </div>
+    <div class="card">
+      <h3>Actual</h3>
+      <p>Boss called Inventory first, then Accounting, then Customer Service. Inventory found 8 Basic Hoodie Big Yale size M in Aisle A, shortfall 12, Bulldog Print Co lead time 5 days, and zero open invoices because invoice 501 was already paid on ticket 101. Accounting quoted 15% off the $58 list, which is $49.30 and still above the $22 cost, and refused the $264 purchase of 12 units because checking had $160. No human pay was created. Customer Service drafted the offer for 8 hoodies. Boss marked the ticket resolved.</p>
+      <p>Tools used: check_inventory, get_pricing.</p>
+    </div>
+  </section>
+
+  <section id="cash">
+    <h2>Cash</h2>
+    <div class="card">
+      <p>Starting checking balance after reset: <strong>$3400.00</strong> on 2026-08-31.</p>
+      <p>Ticket 101: checking fell by <strong>$840.00</strong> because Kay approved payment of open invoice 501, the overdue Bulldog Print Co reprint. Balance after the ticket: $2560.00.</p>
+      <p>Ticket 102: checking fell by <strong>$2400.00</strong> because Kay approved Chapel Street rent on lease 1. Balance after the ticket: $160.00.</p>
+      <p>Ticket 103: checking did not change. The $264.00 hoodie purchase was refused so the balance would not go negative. Balance after the ticket: $160.00.</p>
+      <p>Ending checking balance: <strong>$160.00</strong>. That matches <code>cash_accounts</code> in <code>data/campus_customs_new.db</code> (3400 − 840 − 2400 = 160).</p>
+    </div>
+  </section>
+
+  <section id="reflection">
+    <h2>Reflection</h2>
+    <div class="card">
+      <h3>How I would grade the agents on each ticket</h3>
+      <p>Ticket 101 did the useful thing. Inventory did not invent a size S tee, Accounting noticed invoice 501 was due 2026-08-28 against shop today 2026-08-31, and cash stayed at $3400 until Kay approved $840. I would score that well because the human gate held and the customer draft admits the shirt is still qty 0 with a 5-day lead time.</p>
+      <p>Ticket 102 also did the useful thing. Facilities, not Inventory, owned the lease, the rent matched $2400, and the pay waited until checking had $2560 left. After approval the lease next_due moved to 2026-10-02. That is the right table update for a real rent payment.</p>
+      <p>Ticket 103 is the one I would watch. The quote of $49.30 for 8 hoodies stays above the $22 cost, and refusing $264 when checking was $160 is correct. The team did not call Facilities, which matches the plan. It resolved without a sale, which is honest because this homework never adds revenue.</p>
+      <h3>Actual compared with Expected</h3>
+      <p>Ticket 101 matched the plan: Inventory first, then the unpaid invoice, then a human $840 approval, then a customer draft. Actual also recorded the balance moving from $3400 to $2560.</p>
+      <p>Ticket 102 matched the plan: Facilities first, rent of $2400 due in 2 days, human approval, no inventory agent. Actual added the new due date 2026-10-02, which the expected note did not spell out but the lease tool required.</p>
+      <p>Ticket 103 matched the plan: Inventory first, shortfall 12, Accounting refuses the restock, Customer Service drafts the 8-unit offer. One difference: by the time this ticket ran, invoice 501 was already paid, so the vendor block was gone and the refusal was the $160 cash balance, not an open bill.</p>
+      <h3>What would have been simpler as one agent</h3>
+      <p>Ticket 103’s discount math is a single worksheet: qty on hand, list, cost, and cash. One agent with the same MCP tools could have quoted $49.30 and refused $264 without a handoff. The split still helped on 101 and 102, because the person who counts shirts should not be the person who moves rent.</p>
+      <h3>Three problems this team could take with the tools it has</h3>
+      <p>Another size of the white tee is in stock (M has 5). Inventory can read that row and Customer Service can offer it without a new tool.</p>
+      <p>A second rent month could be prepared from the lease row, and Accounting can refuse it if checking is still $160.</p>
+      <p>The crest mug is qty 0. Inventory can point at Elm City Gifts, and vendor_open_invoices can say whether that vendor will ship.</p>
+      <h3>Three problems this team cannot take yet</h3>
+      <p>A customer payment for the hoodie quote. Cash only leaves, and there is no tool to record money coming in. We would need a receive-payment tool and an orders table.</p>
+      <p>A real email to Tauhid Zaman or Yale AI Club. Customer Service is only allowed to leave a draft. We would need a send tool with a human confirm step.</p>
+      <p>Choosing QuickShip CT for a rush once the reprint exists. Nothing in the tools books a courier or spends their 1-day lead time. We would need a shipment tool and a Facilities or Inventory step that writes a delivery row.</p>
+    </div>
+  </section>
+  <script>
+    const buttons = document.querySelectorAll("nav button");
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        buttons.forEach((item) => item.classList.remove("on"));
+        document.querySelectorAll("section").forEach((item) => item.classList.remove("on"));
+        button.classList.add("on");
+        document.getElementById(button.dataset.tab).classList.add("on");
+      });
+    });
+  </script>
+</body>
+</html>

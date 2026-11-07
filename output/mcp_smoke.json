@@ -1,0 +1,53 @@
+[
+  {
+    "prompt": "Complete the homework tests. Check ticket 101 in the working database.",
+    "tool": "get_ticket",
+    "tool_input": {
+      "ticket_id": 101
+    },
+    "output": {
+      "id": 101,
+      "type": "customer_order",
+      "requester": "Tauhid Zaman",
+      "subject": "Bulldog tee",
+      "sku": "CC-TEE-WHITE",
+      "size": "S",
+      "qty": 1,
+      "lease_id": null,
+      "invoice_id": 501,
+      "status": "open",
+      "notes": "Needs a tee in size S.",
+      "created_at": "2026-08-31T09:15:00-04:00"
+    }
+  },
+  {
+    "prompt": "Complete the homework tests. Check navy hoodie size M stock.",
+    "tool": "check_inventory",
+    "tool_input": {
+      "sku": "CC-HOOD-NAVY",
+      "size": "M"
+    },
+    "output": {
+      "sku": "CC-HOOD-NAVY",
+      "name": "Basic Hoodie Big Yale",
+      "size": "M",
+      "qty": 8,
+      "location": "Aisle A"
+    }
+  },
+  {
+    "prompt": "Complete the homework tests. Read invoice 501.",
+    "tool": "get_invoice",
+    "tool_input": {
+      "invoice_id": 501
+    },
+    "output": {
+      "id": 501,
+      "vendor_id": 1,
+      "amount": 840.0,
+      "due_date": "2026-08-28",
+      "status": "open",
+      "description": "Rush reprint CC-TEE-WHITE S"
+    }
+  }
+]
