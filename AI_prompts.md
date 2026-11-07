@@ -132,3 +132,9 @@ What was lacking: the build was still not finished.
 Immediately run all essential tests, fix any critical errors, and publish the completed project to GitHub. Verify the required submission URL works and give me the exact link to paste into Canvas. Do not spend time on cosmetic improvements. We must submit before 11:58 AM.
 
 What was lacking: the earlier messages said to finish the homework, but this one says to run the tests, publish to GitHub, and return the Canvas link.
+
+### Follow-up
+
+once done review it like the professor and ta will and fix anything
+
+What was lacking: the test-and-publish message did not say to grade the finished work the way the professor and TA would and fix what they would mark down.
